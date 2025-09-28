@@ -7,6 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { CreditCard, Smartphone, DollarSign, Heart, Gift } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 interface DonationModalProps {
   isOpen: boolean;
@@ -41,6 +42,27 @@ export const DonationModal = ({
   };
 
   const finalAmount = amount || parseInt(customAmount) || 0;
+
+  const handleDonate = () => {
+    // Simulate donation processing
+    toast({
+      title: "Success! 🎉",
+      description: `Your donation of ₹${finalAmount.toLocaleString()} has been added to the secure Escrow fund. Thank you for your support!`,
+      duration: 5000,
+    });
+    
+    console.log("Donation submitted:", {
+      amount: finalAmount,
+      isRecurring,
+      isHonorDonation,
+      honorName,
+      paymentMethod,
+      campaign: campaignTitle,
+      ngo: ngoName,
+    });
+    
+    onOpenChange(false);
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -182,6 +204,7 @@ export const DonationModal = ({
               variant="donation"
               disabled={finalAmount === 0}
               className="flex-1"
+              onClick={handleDonate}
             >
               <Heart className="h-4 w-4" />
               Donate ₹{finalAmount.toLocaleString()}
