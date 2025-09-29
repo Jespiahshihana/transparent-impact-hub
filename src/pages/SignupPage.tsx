@@ -12,14 +12,18 @@ export const SignupPage = () => {
   const { login } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSignup = (e: React.FormEvent) => {
+  const handleSignup = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
+    
+    // Capture user name from form
+    const formData = new FormData(e.currentTarget);
+    const userName = (formData.get('name') as string) || 'Priya';
     
     // Simulate signup process
     setTimeout(() => {
       setIsLoading(false);
-      login("Priya");
+      login(userName);
       navigate("/dashboard");
     }, 1000);
   };
@@ -52,6 +56,7 @@ export const SignupPage = () => {
                   <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
                     id="name"
+                    name="name"
                     type="text"
                     placeholder="Enter your full name"
                     className="pl-10"

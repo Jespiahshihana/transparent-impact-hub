@@ -13,99 +13,7 @@ import {
   SelectValue 
 } from "@/components/ui/select";
 import { Search, Filter, X } from "lucide-react";
-import laptopImage from "@/assets/laptop-installation.jpg";
-import waterImage from "@/assets/water-purification.jpg";
-import mealsImage from "@/assets/school-meals.jpg";
-import healthcareImage from "@/assets/mobile-healthcare.jpg";
-import skillsImage from "@/assets/women-skills.jpg";
-import solarImage from "@/assets/solar-panels.jpg";
-
-const ALL_CAMPAIGNS = [
-  {
-    id: "digital-classroom",
-    title: "Digital Classroom for Girls",
-    description: "Providing 20 new laptops to enable digital learning for underprivileged girls in Chennai government schools.",
-    ngoName: "Nalam Foundation",
-    ngoTier: "gold" as const,
-    location: "Chennai, Tamil Nadu",
-    image: laptopImage,
-    currentAmount: 380000,
-    goalAmount: 400000,
-    donorsCount: 47,
-    cause: "Education",
-    sdg: "Quality Education",
-  },
-  {
-    id: "clean-water",
-    title: "Clean Water Access Project",
-    description: "Installing water purification systems in 5 rural villages to provide safe drinking water.",
-    ngoName: "Water for Life NGO",
-    ngoTier: "silver" as const,
-    location: "Rajasthan",
-    image: waterImage,
-    currentAmount: 250000,
-    goalAmount: 500000,
-    donorsCount: 23,
-    cause: "Water & Sanitation",
-    sdg: "Clean Water and Sanitation",
-  },
-  {
-    id: "school-meals",
-    title: "Nutritious School Meals",
-    description: "Providing nutritious midday meals to 200 children for an entire academic year.",
-    ngoName: "Child Nutrition Trust",
-    ngoTier: "bronze" as const,
-    location: "Karnataka",
-    image: mealsImage,
-    currentAmount: 180000,
-    goalAmount: 300000,
-    donorsCount: 65,
-    cause: "Nutrition",
-    sdg: "Zero Hunger",
-  },
-  {
-    id: "rural-healthcare",
-    title: "Mobile Healthcare Units",
-    description: "Deploying 3 mobile healthcare units to serve remote tribal communities.",
-    ngoName: "Health Access Foundation",
-    ngoTier: "gold" as const,
-    location: "Odisha",
-    image: healthcareImage,
-    currentAmount: 720000,
-    goalAmount: 900000,
-    donorsCount: 89,
-    cause: "Healthcare",
-    sdg: "Good Health and Well-being",
-  },
-  {
-    id: "skill-training",
-    title: "Women's Skill Development",
-    description: "Training 100 women in vocational skills like tailoring, handicrafts, and digital literacy.",
-    ngoName: "Empowerment Trust",
-    ngoTier: "silver" as const,
-    location: "West Bengal",
-    image: skillsImage,
-    currentAmount: 150000,
-    goalAmount: 350000,
-    donorsCount: 34,
-    cause: "Women's Empowerment",
-    sdg: "Gender Equality",
-  },
-  {
-    id: "solar-energy",
-    title: "Solar Power for Schools",
-    description: "Installing solar panels in 10 rural schools to ensure uninterrupted power supply.",
-    ngoName: "Green Energy Foundation",
-    ngoTier: "bronze" as const,
-    location: "Madhya Pradesh",
-    image: solarImage,
-    currentAmount: 480000,
-    goalAmount: 600000,
-    donorsCount: 56,
-    cause: "Environment",
-    sdg: "Affordable and Clean Energy",
-  },
-];
+import { useCampaigns } from "@/contexts/CampaignContext";
 
 const CAUSES = ["Education", "Water & Sanitation", "Nutrition", "Healthcare", "Women's Empowerment", "Environment"];
 const LOCATIONS = ["Chennai, Tamil Nadu", "Rajasthan", "Karnataka", "Odisha", "West Bengal", "Madhya Pradesh"];
@@ -113,6 +21,7 @@ const NGO_TIERS = ["bronze", "silver", "gold"];
 const SDGS = ["Quality Education", "Clean Water and Sanitation", "Zero Hunger", "Good Health and Well-being", "Gender Equality", "Affordable and Clean Energy"];
 
 export const ExplorePage = () => {
+  const { campaigns } = useCampaigns();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCause, setSelectedCause] = useState("");
   const [selectedLocation, setSelectedLocation] = useState("");
@@ -120,20 +29,18 @@ export const ExplorePage = () => {
   const [selectedSDG, setSelectedSDG] = useState("");
   const [donationModal, setDonationModal] = useState<{
     isOpen: boolean;
-    campaign?: typeof ALL_CAMPAIGNS[0];
+    campaign?: typeof campaigns[0];
   }>({ isOpen: false });
 
-  const filteredCampaigns = ALL_CAMPAIGNS.filter((campaign) => {
+  const filteredCampaigns = campaigns.filter((campaign) => {
     const matchesSearch = campaign.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          campaign.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          campaign.ngoName.toLowerCase().includes(searchQuery.toLowerCase());
     
-    const matchesCause = !selectedCause || campaign.cause === selectedCause;
     const matchesLocation = !selectedLocation || campaign.location === selectedLocation;
     const matchesTier = !selectedTier || campaign.ngoTier === selectedTier;
-    const matchesSDG = !selectedSDG || campaign.sdg === selectedSDG;
 
-    return matchesSearch && matchesCause && matchesLocation && matchesTier && matchesSDG;
+    return matchesSearch && matchesLocation && matchesTier;
   });
 
   const clearFilters = () => {
@@ -144,38 +51,45 @@ export const ExplorePage = () => {
     setSelectedSDG("");
   };
 
-  const hasActiveFilters = searchQuery || selectedCause || selectedLocation || selectedTier || selectedSDG;
-
-  const handleDonate = (campaign: typeof ALL_CAMPAIGNS[0]) => {
+  const handleDonate = (campaign: typeof campaigns[0]) => {
     setDonationModal({ isOpen: true, campaign });
   };
+
+  const activeFilters = [
+    selectedCause && { label: selectedCause, clear: () => setSelectedCause("") },
+    selectedLocation && { label: selectedLocation, clear: () => setSelectedLocation("") },
+    selectedTier && { label: `${selectedTier} tier`, clear: () => setSelectedTier("") },
+    selectedSDG && { label: selectedSDG, clear: () => setSelectedSDG("") },
+  ].filter(Boolean);
 
   return (
     <div className="min-h-screen bg-background">
       <Header />
       
       {/* Hero Section */}
-      <section className="py-12 bg-gradient-subtle">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl lg:text-5xl font-bold mb-4">
-              Explore Campaigns
-            </h1>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Discover verified campaigns making real impact across India
-            </p>
-          </div>
+      <section className="bg-gradient-hero text-primary-foreground py-16">
+        <div className="container mx-auto px-4 text-center">
+          <h1 className="text-4xl lg:text-5xl font-bold mb-6">
+            Explore All Campaigns
+          </h1>
+          <p className="text-xl lg:text-2xl opacity-90 max-w-3xl mx-auto">
+            Discover verified campaigns making real impact worldwide. Every donation is tracked and transparently reported.
+          </p>
+        </div>
+      </section>
 
-          {/* Search and Filters */}
+      {/* Search and Filter Section */}
+      <section className="py-8 bg-muted/30 border-b">
+        <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto space-y-6">
             {/* Search Bar */}
             <div className="relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input
-                placeholder="Search campaigns, NGOs, or causes..."
+                placeholder="Search campaigns by title, description, or NGO name..."
+                className="pl-12 h-12 text-lg"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 h-12 text-lg"
               />
             </div>
 
@@ -183,11 +97,39 @@ export const ExplorePage = () => {
             <div className="grid md:grid-cols-4 gap-4">
               <Select value={selectedCause} onValueChange={setSelectedCause}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Cause" />
+                  <SelectValue placeholder="Select Cause" />
                 </SelectTrigger>
                 <SelectContent>
                   {CAUSES.map((cause) => (
-                    <SelectItem key={cause} value={cause}>{cause}</SelectItem>
+                    <SelectItem key={cause} value={cause}>
+                      {cause}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <Select value={selectedLocation} onValueChange={setSelectedLocation}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select Location" />
+                </SelectTrigger>
+                <SelectContent>
+                  {LOCATIONS.map((location) => (
+                    <SelectItem key={location} value={location}>
+                      {location}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <Select value={selectedTier} onValueChange={setSelectedTier}>
+                <SelectTrigger>
+                  <SelectValue placeholder="NGO Tier" />
+                </SelectTrigger>
+                <SelectContent>
+                  {NGO_TIERS.map((tier) => (
+                    <SelectItem key={tier} value={tier}>
+                      {tier.charAt(0).toUpperCase() + tier.slice(1)}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -198,69 +140,27 @@ export const ExplorePage = () => {
                 </SelectTrigger>
                 <SelectContent>
                   {SDGS.map((sdg) => (
-                    <SelectItem key={sdg} value={sdg}>{sdg}</SelectItem>
+                    <SelectItem key={sdg} value={sdg}>
+                      {sdg}
+                    </SelectItem>
                   ))}
-                </SelectContent>
-              </Select>
-
-              <Select value={selectedLocation} onValueChange={setSelectedLocation}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Location" />
-                </SelectTrigger>
-                <SelectContent>
-                  {LOCATIONS.map((location) => (
-                    <SelectItem key={location} value={location}>{location}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              <Select value={selectedTier} onValueChange={setSelectedTier}>
-                <SelectTrigger>
-                  <SelectValue placeholder="NGO Tier" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="bronze">Bronze</SelectItem>
-                  <SelectItem value="silver">Silver</SelectItem>
-                  <SelectItem value="gold">Gold</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             {/* Active Filters */}
-            {hasActiveFilters && (
-              <div className="flex items-center gap-2 flex-wrap">
-                <Filter className="h-4 w-4 text-muted-foreground" />
+            {activeFilters.length > 0 && (
+              <div className="flex flex-wrap gap-2 items-center">
                 <span className="text-sm text-muted-foreground">Active filters:</span>
-                {searchQuery && (
-                  <Badge variant="secondary" className="gap-1">
-                    Search: {searchQuery}
-                    <X className="h-3 w-3 cursor-pointer" onClick={() => setSearchQuery("")} />
+                {activeFilters.map((filter, index) => (
+                  <Badge key={index} variant="secondary" className="flex items-center gap-1">
+                    {filter.label}
+                    <X 
+                      className="h-3 w-3 cursor-pointer hover:text-destructive" 
+                      onClick={filter.clear}
+                    />
                   </Badge>
-                )}
-                {selectedCause && (
-                  <Badge variant="secondary" className="gap-1">
-                    {selectedCause}
-                    <X className="h-3 w-3 cursor-pointer" onClick={() => setSelectedCause("")} />
-                  </Badge>
-                )}
-                {selectedLocation && (
-                  <Badge variant="secondary" className="gap-1">
-                    {selectedLocation}
-                    <X className="h-3 w-3 cursor-pointer" onClick={() => setSelectedLocation("")} />
-                  </Badge>
-                )}
-                {selectedTier && (
-                  <Badge variant="secondary" className="gap-1">
-                    {selectedTier.charAt(0).toUpperCase() + selectedTier.slice(1)}
-                    <X className="h-3 w-3 cursor-pointer" onClick={() => setSelectedTier("")} />
-                  </Badge>
-                )}
-                {selectedSDG && (
-                  <Badge variant="secondary" className="gap-1">
-                    {selectedSDG}
-                    <X className="h-3 w-3 cursor-pointer" onClick={() => setSelectedSDG("")} />
-                  </Badge>
-                )}
+                ))}
                 <Button variant="ghost" size="sm" onClick={clearFilters}>
                   Clear all
                 </Button>
@@ -270,19 +170,28 @@ export const ExplorePage = () => {
         </div>
       </section>
 
-      {/* Results Section */}
+      {/* Campaigns Grid */}
       <section className="py-12">
         <div className="container mx-auto px-4">
-          <div className="mb-8">
-            <h2 className="text-2xl font-semibold mb-2">
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="text-2xl font-bold">
               {filteredCampaigns.length} Campaign{filteredCampaigns.length !== 1 ? 's' : ''} Found
             </h2>
-            <p className="text-muted-foreground">
-              Verified campaigns with transparent fund usage and blockchain tracking
-            </p>
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Filter className="h-4 w-4" />
+              Showing verified campaigns only
+            </div>
           </div>
 
-          {filteredCampaigns.length > 0 ? (
+          {filteredCampaigns.length === 0 ? (
+            <div className="text-center py-12">
+              <h3 className="text-xl font-semibold mb-2">No campaigns found</h3>
+              <p className="text-muted-foreground mb-4">
+                Try adjusting your search terms or filters
+              </p>
+              <Button onClick={clearFilters}>Clear all filters</Button>
+            </div>
+          ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredCampaigns.map((campaign) => (
                 <CampaignCard
@@ -291,17 +200,6 @@ export const ExplorePage = () => {
                   onClick={() => handleDonate(campaign)}
                 />
               ))}
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <div className="text-6xl mb-4">🔍</div>
-              <h3 className="text-xl font-semibold mb-2">No campaigns found</h3>
-              <p className="text-muted-foreground mb-4">
-                Try adjusting your search criteria or clearing filters
-              </p>
-              <Button variant="outline" onClick={clearFilters}>
-                Clear all filters
-              </Button>
             </div>
           )}
         </div>
@@ -314,6 +212,7 @@ export const ExplorePage = () => {
           onOpenChange={(isOpen) => setDonationModal({ isOpen })}
           campaignTitle={donationModal.campaign.title}
           ngoName={donationModal.campaign.ngoName}
+          campaignId={donationModal.campaign.id}
         />
       )}
     </div>

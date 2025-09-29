@@ -8,12 +8,14 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { CreditCard, Smartphone, DollarSign, Heart, Gift } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { useCampaigns } from "@/contexts/CampaignContext";
 
 interface DonationModalProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   campaignTitle: string;
   ngoName: string;
+  campaignId: string;
 }
 
 const SUGGESTED_AMOUNTS = [500, 1000, 2500, 5000];
@@ -23,7 +25,9 @@ export const DonationModal = ({
   onOpenChange,
   campaignTitle,
   ngoName,
+  campaignId,
 }: DonationModalProps) => {
+  const { updateCampaignFunding } = useCampaigns();
   const [amount, setAmount] = useState<number | null>(null);
   const [customAmount, setCustomAmount] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("card");
@@ -44,6 +48,9 @@ export const DonationModal = ({
   const finalAmount = amount || parseInt(customAmount) || 0;
 
   const handleDonate = () => {
+    // Update campaign funding
+    updateCampaignFunding(campaignId, finalAmount);
+    
     // Simulate donation processing
     toast({
       title: "Success! 🎉",

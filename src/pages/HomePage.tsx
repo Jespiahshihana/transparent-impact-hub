@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { HeroSection } from "@/components/HeroSection";
 import { CampaignCard } from "@/components/CampaignCard";
@@ -6,48 +7,9 @@ import { DonationModal } from "@/components/DonationModal";
 import { EvidenceViewer } from "@/components/EvidenceViewer";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Target, Users, TrendingUp } from "lucide-react";
+import { useCampaigns } from "@/contexts/CampaignContext";
 import laptopImage from "@/assets/laptop-installation.jpg";
-import waterImage from "@/assets/water-purification.jpg";
-import mealsImage from "@/assets/school-meals.jpg";
 
-const FEATURED_CAMPAIGNS = [
-  {
-    id: "digital-classroom",
-    title: "Digital Classroom for Girls",
-    description: "Providing 20 new laptops to enable digital learning for underprivileged girls in Chennai government schools.",
-    ngoName: "Nalam Foundation",
-    ngoTier: "gold" as const,
-    location: "Chennai, Tamil Nadu",
-    image: laptopImage,
-    currentAmount: 380000,
-    goalAmount: 400000,
-    donorsCount: 47,
-  },
-  {
-    id: "clean-water",
-    title: "Clean Water Access Project",
-    description: "Installing water purification systems in 5 rural villages to provide safe drinking water.",
-    ngoName: "Water for Life NGO",
-    ngoTier: "silver" as const,
-    location: "Rajasthan",
-    image: waterImage,
-    currentAmount: 250000,
-    goalAmount: 500000,
-    donorsCount: 23,
-  },
-  {
-    id: "school-meals",
-    title: "Nutritious School Meals",
-    description: "Providing nutritious midday meals to 200 children for an entire academic year.",
-    ngoName: "Child Nutrition Trust",
-    ngoTier: "bronze" as const,
-    location: "Karnataka",
-    image: mealsImage,
-    currentAmount: 180000,
-    goalAmount: 300000,
-    donorsCount: 65,
-  },
-];
 
 const MOCK_EVIDENCE = [
   {
@@ -77,14 +39,15 @@ const MOCK_EVIDENCE = [
 ];
 
 export const HomePage = () => {
+  const { campaigns } = useCampaigns();
   const [donationModal, setDonationModal] = useState<{
     isOpen: boolean;
-    campaign?: typeof FEATURED_CAMPAIGNS[0];
+    campaign?: typeof campaigns[0];
   }>({ isOpen: false });
   
   const [evidenceModal, setEvidenceModal] = useState(false);
 
-  const handleDonate = (campaign: typeof FEATURED_CAMPAIGNS[0]) => {
+  const handleDonate = (campaign: typeof campaigns[0]) => {
     setDonationModal({ isOpen: true, campaign });
   };
 
@@ -106,7 +69,7 @@ export const HomePage = () => {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-            {FEATURED_CAMPAIGNS.map((campaign) => (
+            {campaigns.map((campaign) => (
               <CampaignCard
                 key={campaign.id}
                 {...campaign}
@@ -116,10 +79,12 @@ export const HomePage = () => {
           </div>
 
           <div className="text-center">
-            <Button variant="outline" size="lg">
-              View All Campaigns
-              <ArrowRight className="h-5 w-5" />
-            </Button>
+            <Link to="/explore">
+              <Button variant="outline" size="lg">
+                View All Campaigns
+                <ArrowRight className="h-5 w-5" />
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
@@ -212,6 +177,7 @@ export const HomePage = () => {
           onOpenChange={(isOpen) => setDonationModal({ isOpen })}
           campaignTitle={donationModal.campaign.title}
           ngoName={donationModal.campaign.ngoName}
+          campaignId={donationModal.campaign.id}
         />
       )}
 
