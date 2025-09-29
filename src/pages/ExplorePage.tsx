@@ -14,6 +14,11 @@ import {
 } from "@/components/ui/select";
 import { Search, Filter, X } from "lucide-react";
 import laptopImage from "@/assets/laptop-installation.jpg";
+import waterImage from "@/assets/water-purification.jpg";
+import mealsImage from "@/assets/school-meals.jpg";
+import healthcareImage from "@/assets/mobile-healthcare.jpg";
+import skillsImage from "@/assets/women-skills.jpg";
+import solarImage from "@/assets/solar-panels.jpg";
 
 const ALL_CAMPAIGNS = [
   {
@@ -37,7 +42,7 @@ const ALL_CAMPAIGNS = [
     ngoName: "Water for Life NGO",
     ngoTier: "silver" as const,
     location: "Rajasthan",
-    image: laptopImage,
+    image: waterImage,
     currentAmount: 250000,
     goalAmount: 500000,
     donorsCount: 23,
@@ -51,7 +56,7 @@ const ALL_CAMPAIGNS = [
     ngoName: "Child Nutrition Trust",
     ngoTier: "bronze" as const,
     location: "Karnataka",
-    image: laptopImage,
+    image: mealsImage,
     currentAmount: 180000,
     goalAmount: 300000,
     donorsCount: 65,
@@ -65,7 +70,7 @@ const ALL_CAMPAIGNS = [
     ngoName: "Health Access Foundation",
     ngoTier: "gold" as const,
     location: "Odisha",
-    image: laptopImage,
+    image: healthcareImage,
     currentAmount: 720000,
     goalAmount: 900000,
     donorsCount: 89,
@@ -79,7 +84,7 @@ const ALL_CAMPAIGNS = [
     ngoName: "Empowerment Trust",
     ngoTier: "silver" as const,
     location: "West Bengal",
-    image: laptopImage,
+    image: skillsImage,
     currentAmount: 150000,
     goalAmount: 350000,
     donorsCount: 34,
@@ -93,7 +98,7 @@ const ALL_CAMPAIGNS = [
     ngoName: "Green Energy Foundation",
     ngoTier: "bronze" as const,
     location: "Madhya Pradesh",
-    image: laptopImage,
+    image: solarImage,
     currentAmount: 480000,
     goalAmount: 600000,
     donorsCount: 56,

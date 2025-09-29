@@ -7,6 +7,8 @@ import { EvidenceViewer } from "@/components/EvidenceViewer";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Target, Users, TrendingUp } from "lucide-react";
 import laptopImage from "@/assets/laptop-installation.jpg";
+import waterImage from "@/assets/water-purification.jpg";
+import mealsImage from "@/assets/school-meals.jpg";
 
 const FEATURED_CAMPAIGNS = [
   {
@@ -28,7 +30,7 @@ const FEATURED_CAMPAIGNS = [
     ngoName: "Water for Life NGO",
     ngoTier: "silver" as const,
     location: "Rajasthan",
-    image: laptopImage, // Placeholder - would generate specific image
+    image: waterImage,
     currentAmount: 250000,
     goalAmount: 500000,
     donorsCount: 23,
@@ -40,7 +42,7 @@ const FEATURED_CAMPAIGNS = [
     ngoName: "Child Nutrition Trust",
     ngoTier: "bronze" as const,
     location: "Karnataka",
-    image: laptopImage, // Placeholder - would generate specific image
+    image: mealsImage,
     currentAmount: 180000,
     goalAmount: 300000,
     donorsCount: 65,

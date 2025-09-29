@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,6 +9,7 @@ import { Heart, Mail, Lock } from "lucide-react";
 
 export const LoginPage = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = (e: React.FormEvent) => {
@@ -17,7 +19,8 @@ export const LoginPage = () => {
     // Simulate login process
     setTimeout(() => {
       setIsLoading(false);
-      navigate("/");
+      login("Priya");
+      navigate("/dashboard");
     }, 1000);
   };
 

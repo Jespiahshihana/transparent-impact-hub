@@ -1,9 +1,18 @@
 import { Button } from "@/components/ui/button";
-import { Heart, User, Search } from "lucide-react";
+import { Heart, User, Search, LogOut } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 export const Header = () => {
+  const { isLoggedIn, username, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
@@ -38,15 +47,35 @@ export const Header = () => {
               How it Works
             </Button>
           </Link>
-          <Link to="/login">
-            <Button variant="outline" size="sm">
-              <User className="h-4 w-4" />
-              Login
-            </Button>
-          </Link>
-          <Button variant="hero" size="sm">
-            Start Campaign
-          </Button>
+          
+          {isLoggedIn ? (
+            <>
+              <Link to="/dashboard">
+                <Button variant="outline" size="sm">
+                  <User className="h-4 w-4" />
+                  Hello, {username}
+                </Button>
+              </Link>
+              <Button variant="ghost" size="sm" onClick={handleLogout}>
+                <LogOut className="h-4 w-4" />
+                Logout
+              </Button>
+            </>
+          ) : (
+            <>
+              <Link to="/login">
+                <Button variant="outline" size="sm">
+                  <User className="h-4 w-4" />
+                  Login
+                </Button>
+              </Link>
+              <Link to="/signup">
+                <Button variant="ghost" size="sm">
+                  Sign Up
+                </Button>
+              </Link>
+            </>
+          )}
         </nav>
       </div>
     </header>
