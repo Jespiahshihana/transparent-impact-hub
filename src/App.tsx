@@ -12,6 +12,9 @@ import { SignupPage } from "./pages/SignupPage";
 import { ExplorePage } from "./pages/ExplorePage";
 import { HowItWorksPage } from "./pages/HowItWorksPage";
 import { DashboardPage } from "./pages/DashboardPage";
+import { NGOPortalPage } from "./pages/NGOPortalPage";
+import { AdminPortalPage } from "./pages/AdminPortalPage";
+import { ViewEvidencePage } from "./pages/ViewEvidencePage";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +33,9 @@ const App = () => (
               <Route path="/explore" element={<ExplorePage />} />
               <Route path="/how-it-works" element={<HowItWorksPage />} />
               <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/ngo-portal" element={<NGOPortalPage />} />
+              <Route path="/admin-portal" element={<AdminPortalPage />} />
+              <Route path="/evidence/:campaignId" element={<ViewEvidencePage />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

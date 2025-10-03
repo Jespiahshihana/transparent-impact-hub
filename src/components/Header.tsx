@@ -47,6 +47,21 @@ export const Header = () => {
               How it Works
             </Button>
           </Link>
+
+          {isLoggedIn && (
+            <>
+              <Link to="/ngo-portal">
+                <Button variant="ghost" size="sm">
+                  NGO Portal
+                </Button>
+              </Link>
+              <Link to="/admin-portal">
+                <Button variant="ghost" size="sm">
+                  Admin Portal
+                </Button>
+              </Link>
+            </>
+          )}
           
           {isLoggedIn ? (
             <>

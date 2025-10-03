@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { TrustBadge } from "./TrustBadge";
+import { useNavigate } from "react-router-dom";
 import { 
   Heart, 
   TrendingUp, 
@@ -57,6 +58,7 @@ const MOCK_DONATIONS: DonationHistory[] = [
 ];
 
 export const DonorDashboard = () => {
+  const navigate = useNavigate();
   const totalDonated = MOCK_DONATIONS.reduce((sum, donation) => sum + donation.amount, 0);
   const completedDonations = MOCK_DONATIONS.filter(d => d.status === "completed").length;
   const impactProvenCount = MOCK_DONATIONS.filter(d => d.impactProven).length;
@@ -205,7 +207,11 @@ export const DonorDashboard = () => {
                       {donation.status}
                     </Badge>
                     {donation.impactProven && (
-                      <Button variant="outline" size="sm">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => navigate('/evidence/digital-classroom')}
+                      >
                         <Eye className="h-3 w-3" />
                         View Evidence
                       </Button>
