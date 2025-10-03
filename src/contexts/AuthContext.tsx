@@ -1,9 +1,12 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
+export type UserRole = 'donor' | 'ngo' | 'admin';
+
 interface AuthContextType {
   isLoggedIn: boolean;
   username: string;
-  login: (username?: string) => void;
+  role: UserRole | null;
+  login: (username?: string, role?: UserRole) => void;
   logout: () => void;
 }
 
@@ -24,19 +27,22 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState('');
+  const [role, setRole] = useState<UserRole | null>(null);
 
-  const login = (name?: string) => {
+  const login = (name?: string, userRole?: UserRole) => {
     setIsLoggedIn(true);
     setUsername(name || 'Priya');
+    setRole(userRole || 'donor');
   };
 
   const logout = () => {
     setIsLoggedIn(false);
     setUsername('');
+    setRole(null);
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, username, login, logout }}>
+    <AuthContext.Provider value={{ isLoggedIn, username, role, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 
 export const Header = () => {
-  const { isLoggedIn, username, logout } = useAuth();
+  const { isLoggedIn, username, role, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -48,24 +48,29 @@ export const Header = () => {
             </Button>
           </Link>
 
-          {isLoggedIn && (
-            <>
-              <Link to="/ngo-portal">
-                <Button variant="ghost" size="sm">
-                  NGO Portal
-                </Button>
-              </Link>
-              <Link to="/admin-portal">
-                <Button variant="ghost" size="sm">
-                  Admin Portal
-                </Button>
-              </Link>
-            </>
+          {isLoggedIn && role === 'ngo' && (
+            <Link to="/ngo/project-management">
+              <Button variant="ghost" size="sm">
+                NGO Portal
+              </Button>
+            </Link>
+          )}
+
+          {isLoggedIn && role === 'admin' && (
+            <Link to="/admin/user-management">
+              <Button variant="ghost" size="sm">
+                Admin Portal
+              </Button>
+            </Link>
           )}
           
           {isLoggedIn ? (
             <>
-              <Link to="/dashboard">
+              <Link to={
+                role === 'donor' ? '/donor/dashboard' :
+                role === 'ngo' ? '/ngo/project-management' :
+                role === 'admin' ? '/admin/user-management' : '/'
+              }>
                 <Button variant="outline" size="sm">
                   <User className="h-4 w-4" />
                   Hello, {username}

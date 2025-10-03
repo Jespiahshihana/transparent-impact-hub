@@ -1,16 +1,18 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth, UserRole } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Heart, Mail, Lock, User } from "lucide-react";
+import { Heart, Mail, Lock, User, Users, Building, Shield } from "lucide-react";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 export const LoginPage = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedRole, setSelectedRole] = useState<UserRole>('donor');
 
   const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -23,8 +25,20 @@ export const LoginPage = () => {
     // Simulate login process
     setTimeout(() => {
       setIsLoading(false);
-      login(userName);
-      navigate("/dashboard");
+      login(userName, selectedRole);
+      
+      // Redirect based on role
+      switch(selectedRole) {
+        case 'donor':
+          navigate("/donor/dashboard");
+          break;
+        case 'ngo':
+          navigate("/ngo/project-management");
+          break;
+        case 'admin':
+          navigate("/admin/user-management");
+          break;
+      }
     }, 1000);
   };
 
@@ -91,6 +105,33 @@ export const LoginPage = () => {
                     required
                   />
                 </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Login As</Label>
+                <RadioGroup value={selectedRole} onValueChange={(value) => setSelectedRole(value as UserRole)}>
+                  <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-accent cursor-pointer">
+                    <RadioGroupItem value="donor" id="donor" />
+                    <Label htmlFor="donor" className="flex items-center gap-2 cursor-pointer flex-1">
+                      <Users className="h-4 w-4" />
+                      <span>Donor</span>
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-accent cursor-pointer">
+                    <RadioGroupItem value="ngo" id="ngo" />
+                    <Label htmlFor="ngo" className="flex items-center gap-2 cursor-pointer flex-1">
+                      <Building className="h-4 w-4" />
+                      <span>NGO</span>
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-accent cursor-pointer">
+                    <RadioGroupItem value="admin" id="admin" />
+                    <Label htmlFor="admin" className="flex items-center gap-2 cursor-pointer flex-1">
+                      <Shield className="h-4 w-4" />
+                      <span>Admin</span>
+                    </Label>
+                  </div>
+                </RadioGroup>
               </div>
 
               <div className="flex items-center justify-between">

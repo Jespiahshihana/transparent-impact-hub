@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth, UserRole } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -20,11 +20,11 @@ export const SignupPage = () => {
     const formData = new FormData(e.currentTarget);
     const userName = (formData.get('name') as string) || 'Priya';
     
-    // Simulate signup process
+    // Simulate signup process - default to donor role
     setTimeout(() => {
       setIsLoading(false);
-      login(userName);
-      navigate("/dashboard");
+      login(userName, 'donor' as UserRole);
+      navigate("/donor/dashboard");
     }, 1000);
   };
 
